@@ -1,5 +1,14 @@
 import React, { useReducer, useEffect, useCallback, useRef } from 'react';
-import { Modal, Spacer, Dot, useToasts } from '@geist-ui/core';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { Warning as WarningIcon } from '@mui/icons-material';
 import { useSettings } from '../contexts/SettingsContext';
 import AppearanceSettings from './settings/AppearanceSettings';
 import EditorSettings from './settings/EditorSettings';
@@ -51,10 +60,10 @@ function settingsReducer(state, action) {
 const Settings = () => {
   const { settings, updateSettings, updateTheme } = useSettings();
   const { settingsModalVisible, setSettingsModalVisible } = useModalContext();
-  const { setToast } = useToasts();
   const [state, dispatch] = useReducer(settingsReducer, initialState);
   const isInitialMount = useRef(true);
   const updateThemeTimeoutRef = useRef(null);
+  const theme = useTheme();
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -71,7 +80,6 @@ const Settings = () => {
     const newTheme = state.localSettings.theme === 'dark' ? 'light' : 'dark';
     dispatch({ type: 'UPDATE_LOCAL_SETTINGS', payload: { theme: newTheme } });
 
-    // Debounce the theme update
     if (updateThemeTimeoutRef.current) {
       clearTimeout(updateThemeTimeoutRef.current);
     }
@@ -84,20 +92,18 @@ const Settings = () => {
     try {
       await updateSettings(state.localSettings);
       dispatch({ type: 'MARK_SAVED' });
-      setToast({ text: 'Settings saved successfully', type: 'success' });
+      // Note: You might want to implement a toast or snackbar for MUI
+      console.log('Settings saved successfully');
       setSettingsModalVisible(false);
     } catch (error) {
       console.error('Failed to save settings:', error);
-      setToast({
-        text: 'Failed to save settings: ' + error.message,
-        type: 'error',
-      });
+      // Implement error handling, possibly with a MUI Snackbar
     }
   };
 
   const handleClose = useCallback(() => {
     if (state.hasUnsavedChanges) {
-      updateTheme(state.initialSettings.theme); // Revert theme if not saved
+      updateTheme(state.initialSettings.theme);
       dispatch({ type: 'RESET' });
     }
     setSettingsModalVisible(false);
@@ -117,24 +123,33 @@ const Settings = () => {
   }, []);
 
   return (
-    <Modal visible={settingsModalVisible} onClose={handleClose}>
-      <Modal.Title>
+    <Dialog
+      open={settingsModalVisible}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+    >
+      <DialogTitle>
         Settings
         {state.hasUnsavedChanges && (
-          <Dot type="warning" style={{ marginLeft: '8px' }} />
+          <WarningIcon
+            style={{
+              marginLeft: '8px',
+              verticalAlign: 'middle',
+              color: theme.palette.warning.main,
+            }}
+          />
         )}
-      </Modal.Title>
-      <Modal.Content>
+      </DialogTitle>
+      <DialogContent>
         <AppearanceSettings
           themeSettings={state.localSettings.theme}
           onThemeChange={handleThemeChange}
         />
-        <Spacer h={1} />
         <EditorSettings
           autoSave={state.localSettings.autoSave}
           onAutoSaveChange={(value) => handleInputChange('autoSave', value)}
         />
-        <Spacer h={1} />
         <GitSettings
           gitEnabled={state.localSettings.gitEnabled}
           gitUrl={state.localSettings.gitUrl}
@@ -144,12 +159,16 @@ const Settings = () => {
           gitCommitMsgTemplate={state.localSettings.gitCommitMsgTemplate}
           onInputChange={handleInputChange}
         />
-      </Modal.Content>
-      <Modal.Action passive onClick={handleClose}>
-        Cancel
-      </Modal.Action>
-      <Modal.Action onClick={handleSubmit}>Save Changes</Modal.Action>
-    </Modal>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit} color="primary" variant="contained">
+          Save Changes
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

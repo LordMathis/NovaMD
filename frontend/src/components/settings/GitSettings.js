@@ -1,5 +1,11 @@
 import React from 'react';
-import { Text, Toggle, Input, Spacer } from '@geist-ui/core';
+import {
+  Typography,
+  Switch,
+  TextField,
+  FormControlLabel,
+  Box,
+} from '@mui/material';
 
 const GitSettings = ({
   gitEnabled,
@@ -11,60 +17,69 @@ const GitSettings = ({
   onInputChange,
 }) => {
   return (
-    <div className="setting-group">
-      <Text h4>Git Integration</Text>
-      <div className="setting-item">
-        <Text>Enable Git</Text>
-        <Toggle
-          checked={gitEnabled}
-          onChange={(e) => onInputChange('gitEnabled', e.target.checked)}
-        />
-      </div>
-      <div className={gitEnabled ? '' : 'disabled'}>
-        <Input
-          width="100%"
+    <Box>
+      <Typography variant="h6" gutterBottom>
+        Git Integration
+      </Typography>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={gitEnabled}
+            onChange={(e) => onInputChange('gitEnabled', e.target.checked)}
+            color="primary"
+          />
+        }
+        label="Enable Git"
+      />
+      <Box
+        sx={{
+          opacity: gitEnabled ? 1 : 0.5,
+          pointerEvents: gitEnabled ? 'auto' : 'none',
+        }}
+      >
+        <TextField
+          fullWidth
           label="Git URL"
           value={gitUrl}
           onChange={(e) => onInputChange('gitUrl', e.target.value)}
-          disabled={!gitEnabled}
+          margin="normal"
         />
-        <Spacer h={0.5} />
-        <Input
-          width="100%"
+        <TextField
+          fullWidth
           label="Git Username"
           value={gitUser}
           onChange={(e) => onInputChange('gitUser', e.target.value)}
-          disabled={!gitEnabled}
+          margin="normal"
         />
-        <Spacer h={0.5} />
-        <Input.Password
-          width="100%"
+        <TextField
+          fullWidth
           label="Git Token"
+          type="password"
           value={gitToken}
           onChange={(e) => onInputChange('gitToken', e.target.value)}
-          disabled={!gitEnabled}
+          margin="normal"
         />
-        <Spacer h={0.5} />
-        <div className="setting-item">
-          <Text>Auto Commit</Text>
-          <Toggle
-            checked={gitAutoCommit}
-            onChange={(e) => onInputChange('gitAutoCommit', e.target.checked)}
-            disabled={!gitEnabled}
-          />
-        </div>
-        <Spacer h={0.5} />
-        <Input
-          width="100%"
+        <FormControlLabel
+          control={
+            <Switch
+              checked={gitAutoCommit}
+              onChange={(e) => onInputChange('gitAutoCommit', e.target.checked)}
+              color="primary"
+            />
+          }
+          label="Auto Commit"
+        />
+        <TextField
+          fullWidth
           label="Commit Message Template"
           value={gitCommitMsgTemplate}
           onChange={(e) =>
             onInputChange('gitCommitMsgTemplate', e.target.value)
           }
-          disabled={!gitEnabled}
+          margin="normal"
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

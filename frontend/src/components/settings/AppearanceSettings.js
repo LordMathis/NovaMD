@@ -1,14 +1,22 @@
 import React from 'react';
-import { Text, Toggle } from '@geist-ui/core';
+import { Typography, Switch, FormControlLabel } from '@mui/material';
 
 const AppearanceSettings = ({ themeSettings, onThemeChange }) => {
   return (
-    <div className="setting-group">
-      <Text h4>Appearance</Text>
-      <div className="setting-item">
-        <Text>Dark Mode</Text>
-        <Toggle checked={themeSettings === 'dark'} onChange={onThemeChange} />
-      </div>
+    <div>
+      <Typography variant="h6" gutterBottom>
+        Appearance
+      </Typography>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={themeSettings === 'dark'}
+            onChange={onThemeChange}
+            color="primary"
+          />
+        }
+        label="Dark Mode"
+      />
     </div>
   );
 };

@@ -1,24 +1,25 @@
 import React from 'react';
-import { Text, Toggle, Tooltip } from '@geist-ui/core';
+import { Typography, Switch, FormControlLabel, Tooltip } from '@mui/material';
 
 const EditorSettings = ({ autoSave, onAutoSaveChange }) => {
   return (
-    <div className="setting-group">
-      <Text h4>Editor</Text>
-      <div className="setting-item">
-        <Text>Auto Save</Text>
-        <Tooltip
-          text="Auto Save feature is coming soon!"
-          type="dark"
-          placement="left"
-        >
-          <Toggle
-            checked={autoSave}
-            onChange={(e) => onAutoSaveChange(e.target.checked)}
-            disabled
-          />
-        </Tooltip>
-      </div>
+    <div>
+      <Typography variant="h6" gutterBottom>
+        Editor
+      </Typography>
+      <Tooltip title="Auto Save feature is coming soon!" placement="right">
+        <FormControlLabel
+          control={
+            <Switch
+              checked={autoSave}
+              onChange={(e) => onAutoSaveChange(e.target.checked)}
+              color="primary"
+              disabled
+            />
+          }
+          label="Auto Save"
+        />
+      </Tooltip>
     </div>
   );
 };

@@ -31,6 +31,7 @@
     "@emotion/styled": "^11.13.0",
     "@geist-ui/core": "^2.3.8",
     "@geist-ui/icons": "^1.0.2",
+    "@mui/icons-material": "^6.1.2",
     "@mui/material": "^6.1.2",
     "codemirror": "^6.0.1",
     "katex": "^0.16.11",
