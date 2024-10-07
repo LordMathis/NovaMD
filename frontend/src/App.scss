@@ -2,6 +2,18 @@
 $padding: 20px;
 $navbar-height: 64px;
 
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex-grow: 1;
+  width: 100%;
+  padding: 20px; // Adjust as needed
+}
+
 .custom-navbar {
   display: flex;
   align-items: center;
