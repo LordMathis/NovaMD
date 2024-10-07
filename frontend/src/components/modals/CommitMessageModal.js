@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Modal, Input } from '@geist-ui/core';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from '@mui/material';
 import { useModalContext } from '../../contexts/ModalContext';
 
 const CommitMessageModal = ({ onCommitAndPush }) => {
@@ -16,24 +23,34 @@ const CommitMessageModal = ({ onCommitAndPush }) => {
   };
 
   return (
-    <Modal
-      visible={commitMessageModalVisible}
+    <Dialog
+      open={commitMessageModalVisible}
       onClose={() => setCommitMessageModalVisible(false)}
     >
-      <Modal.Title>Enter Commit Message</Modal.Title>
-      <Modal.Content>
-        <Input
-          width="100%"
-          placeholder="Enter commit message"
+      <DialogTitle>Enter Commit Message</DialogTitle>
+      <DialogContent>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Commit Message"
+          type="text"
+          fullWidth
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-      </Modal.Content>
-      <Modal.Action passive onClick={() => setCommitMessageModalVisible(false)}>
-        Cancel
-      </Modal.Action>
-      <Modal.Action onClick={handleSubmit}>Commit</Modal.Action>
-    </Modal>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => setCommitMessageModalVisible(false)}
+          color="primary"
+        >
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit} color="primary" variant="contained">
+          Commit
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

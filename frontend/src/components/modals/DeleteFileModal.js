@@ -1,5 +1,12 @@
 import React from 'react';
-import { Modal, Text } from '@geist-ui/core';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+} from '@mui/material';
 import { useModalContext } from '../../contexts/ModalContext';
 
 const DeleteFileModal = ({ onDeleteFile, selectedFile }) => {
@@ -12,19 +19,28 @@ const DeleteFileModal = ({ onDeleteFile, selectedFile }) => {
   };
 
   return (
-    <Modal
-      visible={deleteFileModalVisible}
+    <Dialog
+      open={deleteFileModalVisible}
       onClose={() => setDeleteFileModalVisible(false)}
     >
-      <Modal.Title>Delete File</Modal.Title>
-      <Modal.Content>
-        <Text>Are you sure you want to delete "{selectedFile}"?</Text>
-      </Modal.Content>
-      <Modal.Action passive onClick={() => setDeleteFileModalVisible(false)}>
-        Cancel
-      </Modal.Action>
-      <Modal.Action onClick={handleConfirm}>Delete</Modal.Action>
-    </Modal>
+      <DialogTitle>Delete File</DialogTitle>
+      <DialogContent>
+        <Typography>
+          Are you sure you want to delete "{selectedFile}"?
+        </Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => setDeleteFileModalVisible(false)}
+          color="primary"
+        >
+          Cancel
+        </Button>
+        <Button onClick={handleConfirm} color="error" variant="contained">
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Modal, Input } from '@geist-ui/core';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+} from '@mui/material';
 import { useModalContext } from '../../contexts/ModalContext';
 
 const CreateFileModal = ({ onCreateFile }) => {
@@ -15,24 +22,31 @@ const CreateFileModal = ({ onCreateFile }) => {
   };
 
   return (
-    <Modal
-      visible={newFileModalVisible}
+    <Dialog
+      open={newFileModalVisible}
       onClose={() => setNewFileModalVisible(false)}
     >
-      <Modal.Title>Create New File</Modal.Title>
-      <Modal.Content>
-        <Input
-          width="100%"
-          placeholder="Enter file name"
+      <DialogTitle>Create New File</DialogTitle>
+      <DialogContent>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="File Name"
+          type="text"
+          fullWidth
           value={fileName}
           onChange={(e) => setFileName(e.target.value)}
         />
-      </Modal.Content>
-      <Modal.Action passive onClick={() => setNewFileModalVisible(false)}>
-        Cancel
-      </Modal.Action>
-      <Modal.Action onClick={handleSubmit}>Create</Modal.Action>
-    </Modal>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setNewFileModalVisible(false)} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit} color="primary" variant="contained">
+          Create
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 
