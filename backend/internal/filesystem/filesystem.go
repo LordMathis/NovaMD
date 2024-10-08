@@ -17,9 +17,9 @@ type FileSystem struct {
 }
 
 type FileNode struct {
-	Type  string     `json:"type"`
-	Name  string     `json:"name"`
-	Files []FileNode `json:"files,omitempty"`
+	ID       string     `json:"id"`
+	Name     string     `json:"name"`
+	Children []FileNode `json:"children,omitempty"`
 }
 
 func New(rootDir string, settings *models.Settings) *FileSystem {
@@ -73,7 +73,7 @@ func (fs *FileSystem) validatePath(path string) (string, error) {
 }
 
 func (fs *FileSystem) ListFilesRecursively() ([]FileNode, error) {
-	return fs.walkDirectory(fs.RootDir)
+    return fs.walkDirectory(fs.RootDir)
 }
 
 func (fs *FileSystem) walkDirectory(dir string) ([]FileNode, error) {
@@ -84,24 +84,41 @@ func (fs *FileSystem) walkDirectory(dir string) ([]FileNode, error) {
 		return nil, err
 	}
 
+	// Separate directories and files
+	var directories, files []os.DirEntry
 	for _, entry := range entries {
 		if entry.IsDir() {
-			subdir := filepath.Join(dir, entry.Name())
-			subFiles, err := fs.walkDirectory(subdir)
-			if err != nil {
-				return nil, err
-			}
-			nodes = append(nodes, FileNode{
-				Type:  "directory",
-				Name:  entry.Name(),
-				Files: subFiles,
-			})
+			directories = append(directories, entry)
 		} else {
-			nodes = append(nodes, FileNode{
-				Type: "file",
-				Name: entry.Name(),
-			})
+			files = append(files, entry)
 		}
+	}
+
+	// Process directories first
+	for _, entry := range directories {
+		path := filepath.Join(dir, entry.Name())
+		relPath, _ := filepath.Rel(fs.RootDir, path)
+
+		subFiles, err := fs.walkDirectory(path)
+		if err != nil {
+			return nil, err
+		}
+		nodes = append(nodes, FileNode{
+			ID:       relPath,
+			Name:     entry.Name(),
+			Children: subFiles,
+		})
+	}
+
+	// Then process files
+	for _, entry := range files {
+		path := filepath.Join(dir, entry.Name())
+		relPath, _ := filepath.Rel(fs.RootDir, path)
+
+		nodes = append(nodes, FileNode{
+			ID:   relPath,
+			Name: entry.Name(),
+		})
 	}
 
 	return nodes, nil
